@@ -5,12 +5,17 @@ import (
 	"github.com/syfaro/telegram-bot-api"
 )
 
+// Help contains information about a command,
+// used for showing info in the help command.
 type Help struct {
 	Name        string
 	Description string
 	Example     string
 }
 
+// String converts a Help struct into a pretty string.
+//
+// full makes each command item multiline with extra newlines.
 func (h Help) String(full bool) string {
 	b := &bytes.Buffer{}
 
@@ -34,6 +39,7 @@ func (h Help) String(full bool) string {
 	return b.String()
 }
 
+// Command contains the methods a must have.
 type Command interface {
 	Help() Help
 	Init() error
