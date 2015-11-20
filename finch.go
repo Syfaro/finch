@@ -59,13 +59,11 @@ func (f *Finch) Start() {
 }
 
 // StartWebhook initializes commands,
-// then registers a webhook for the bot to listen on.
-//
-// This webhook URL is your bot token.
-func (f *Finch) StartWebhook() {
+// then registers a webhook for the bot to listen on
+func (f *Finch) StartWebhook(endpoint string) {
 	f.commandInit()
 
-	f.API.ListenForWebhook("/" + f.API.Token)
+	f.API.ListenForWebhook(endpoint)
 }
 
 // SendMessage sends a message with various changes, and does not return the Message.

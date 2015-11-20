@@ -2,11 +2,11 @@
 
 A Golang Telegram Bot framework
 
-Unlike the [Telegram Bot API](https://github.com/Syfaro/telegram-bot-api), this is a framework for writing commands, not just low level dealings with the API directly. 
+Unlike the [Telegram Bot API](https://github.com/Syfaro/telegram-bot-api), this is a framework for writing commands, not just low level dealings with the API directly.
 
-It currently is in its early infancy and needs lots of work. Expect frequent breaking changes. 
+It currently is in its early infancy and needs lots of work. Expect frequent breaking changes.
 
-You can see how to write some commands from the example commands provided in the `commands` folder. 
+You can see how to write some commands from the example commands provided in the `commands` folder.
 
 ## Example
 
@@ -29,7 +29,7 @@ func main() {
 }
 ```
 
-The webhook listener code is currently untested, and requires running a `net/http` server. 
+The webhook listener code is currently untested, and requires running a `net/http` server.
 
 ```go
 package main
@@ -45,7 +45,7 @@ import (
 func main() {
 	f := finch.NewFinchWithClient("MyAwesomeBotToken", &http.Client{})
 
-	f.StartWebhook()
+	f.StartWebhook("/" + f.API.Token)
 
 	http.ListenAndServeTLS("0.0.0.0:8443", "cert.pem", "key.pem", nil)
 }
