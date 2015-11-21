@@ -48,16 +48,32 @@ type Command interface {
 	ExecuteKeyboard(tgbotapi.Update, *Finch) error
 }
 
+// CommandBase is a default Command that handles various tasks for you,
+// and allows for you to not have to write empty methods.
 type CommandBase struct {
 	MyState *CommandState
 }
 
-func (CommandBase) Help() Help                                    { return Help{} }
-func (cmd *CommandBase) Init(c *CommandState) error               { cmd.MyState = c; return nil }
-func (CommandBase) ShouldExecute(tgbotapi.Update) bool            { return false }
-func (CommandBase) Execute(tgbotapi.Update, *Finch) error         { return nil }
+// Help returns an empty Help struct.
+func (CommandBase) Help() Help { return Help{} }
+
+// Init sets MyState equal to the current CommandState.
+//
+// If you overwrite this method, you should still set MyState equal to CommandState!
+func (cmd *CommandBase) Init(c *CommandState) error { cmd.MyState = c; return nil }
+
+// ShouldExecute returns false, you should overwrite this method.
+func (CommandBase) ShouldExecute(tgbotapi.Update) bool { return false }
+
+// Execute returns nil to show no error, you should overwrite this method.
+func (CommandBase) Execute(tgbotapi.Update, *Finch) error { return nil }
+
+// ExecuteKeyboard returns nil to show no error, you may overwrite this when
+// you are expecting to get a reply that is not a command.
 func (CommandBase) ExecuteKeyboard(tgbotapi.Update, *Finch) error { return nil }
 
+// CommandState is the current state of a command.
+// It contains the command and if the command is waiting for a reply.
 type CommandState struct {
 	Command         Command
 	WaitingForReply bool
