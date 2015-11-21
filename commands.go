@@ -7,11 +7,14 @@ import (
 	"strings"
 )
 
-var commands []Command
+var commands []*CommandState
 
 // RegisterCommand adds a command to the bot.
 func RegisterCommand(cmd Command) {
-	commands = append(commands, cmd)
+	commands = append(commands, &CommandState{
+		Command:         cmd,
+		WaitingForReply: false,
+	})
 }
 
 // SimpleCommand generates a command regex and matches it against a message.
@@ -34,21 +37,26 @@ func SimpleArgCommand(trigger string, args int, message string) bool {
 }
 
 func (f *Finch) commandRouter(update tgbotapi.Update) {
-	for _, command := range *f.Commands {
-		if command.ShouldExecute(update) {
-			err := command.Execute(update, f)
+	for _, command := range f.Commands {
+		if command.WaitingForReply {
+			err := command.Command.ExecuteKeyboard(update, f)
+			f.commandError(update, err)
+		}
+
+		if command.Command.ShouldExecute(update) {
+			err := command.Command.Execute(update, f)
 			f.commandError(update, err)
 		}
 	}
 }
 
 func (f *Finch) commandInit() {
-	for _, command := range *f.Commands {
-		err := command.Init()
+	for _, command := range f.Commands {
+		err := command.Command.Init(command)
 		if err != nil {
-			log.Printf("Error starting plugin %s: %s\n", command.Help().Name, err.Error())
+			log.Printf("Error starting plugin %s: %s\n", command.Command.Help().Name, err.Error())
 		} else {
-			log.Printf("Started plugin %s!", command.Help().Name)
+			log.Printf("Started plugin %s!", command.Command.Help().Name)
 		}
 	}
 }

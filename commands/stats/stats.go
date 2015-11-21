@@ -18,6 +18,7 @@ func init() {
 }
 
 type infoCommand struct {
+	finch.CommandBase
 }
 
 func (cmd *infoCommand) Help() finch.Help {
@@ -26,10 +27,6 @@ func (cmd *infoCommand) Help() finch.Help {
 		Description: "Displays some statistics",
 		Example:     "/stats@@",
 	}
-}
-
-func (cmd *infoCommand) Init() error {
-	return nil
 }
 
 func (cmd *infoCommand) ShouldExecute(update tgbotapi.Update) bool {
@@ -55,14 +52,11 @@ func (cmd *infoCommand) Execute(update tgbotapi.Update, f *finch.Finch) error {
 }
 
 type infoCollector struct {
+	finch.CommandBase
 }
 
 func (cmd *infoCollector) Help() finch.Help {
 	return finch.Help{Name: "Stats Collector"}
-}
-
-func (cmd *infoCollector) Init() error {
-	return nil
 }
 
 func (cmd *infoCollector) ShouldExecute(update tgbotapi.Update) bool {

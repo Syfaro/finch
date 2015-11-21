@@ -42,7 +42,23 @@ func (h Help) String(full bool) string {
 // Command contains the methods a must have.
 type Command interface {
 	Help() Help
-	Init() error
+	Init(*CommandState) error
 	ShouldExecute(tgbotapi.Update) bool
 	Execute(tgbotapi.Update, *Finch) error
+	ExecuteKeyboard(tgbotapi.Update, *Finch) error
+}
+
+type CommandBase struct {
+	MyState *CommandState
+}
+
+func (CommandBase) Help() Help                                    { return Help{} }
+func (cmd *CommandBase) Init(c *CommandState) error               { cmd.MyState = c; return nil }
+func (CommandBase) ShouldExecute(tgbotapi.Update) bool            { return false }
+func (CommandBase) Execute(tgbotapi.Update, *Finch) error         { return nil }
+func (CommandBase) ExecuteKeyboard(tgbotapi.Update, *Finch) error { return nil }
+
+type CommandState struct {
+	Command         Command
+	WaitingForReply bool
 }

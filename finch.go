@@ -15,7 +15,7 @@ type Config map[string]interface{}
 type Finch struct {
 	API      *tgbotapi.BotAPI
 	Config   Config
-	Commands *[]Command
+	Commands []*CommandState
 }
 
 // NewFinch returns a new Finch instance, with Telegram API setup.
@@ -34,7 +34,7 @@ func NewFinchWithClient(token string, client *http.Client) *Finch {
 	}
 
 	bot.API = api
-	bot.Commands = &commands
+	bot.Commands = commands
 
 	bot.Config = make(Config)
 

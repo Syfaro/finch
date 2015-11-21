@@ -11,6 +11,7 @@ func init() {
 }
 
 type helpCommand struct {
+	finch.CommandBase
 }
 
 func (cmd *helpCommand) Help() finch.Help {
@@ -19,10 +20,6 @@ func (cmd *helpCommand) Help() finch.Help {
 		Description: "Displays loaded commands and their help text",
 		Example:     "/help@@",
 	}
-}
-
-func (cmd *helpCommand) Init() error {
-	return nil
 }
 
 func (cmd *helpCommand) ShouldExecute(update tgbotapi.Update) bool {
@@ -34,8 +31,8 @@ func (cmd *helpCommand) Execute(update tgbotapi.Update, f *finch.Finch) error {
 
 	b.WriteString("Loaded commands:\n\n")
 
-	for _, command := range *f.Commands {
-		help := command.Help()
+	for _, command := range f.Commands {
+		help := command.Command.Help()
 
 		if help.Description == "" {
 			continue

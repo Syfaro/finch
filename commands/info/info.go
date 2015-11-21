@@ -11,6 +11,7 @@ func init() {
 }
 
 type infoCommand struct {
+	finch.CommandBase
 }
 
 func (cmd *infoCommand) Help() finch.Help {
@@ -19,10 +20,6 @@ func (cmd *infoCommand) Help() finch.Help {
 		Description: "Displays information about the currently requesting user",
 		Example:     "/info@@",
 	}
-}
-
-func (cmd *infoCommand) Init() error {
-	return nil
 }
 
 func (cmd *infoCommand) ShouldExecute(update tgbotapi.Update) bool {
