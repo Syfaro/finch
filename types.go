@@ -78,10 +78,12 @@ func (CommandBase) Execute(tgbotapi.Update) error { return nil }
 // you are expecting to get a reply that is not a command.
 func (CommandBase) ExecuteKeyboard(tgbotapi.Update) error { return nil }
 
+// Get fetches an item from the Config struct.
 func (cmd CommandBase) Get(key string) interface{} {
 	return cmd.Finch.Config[key]
 }
 
+// Set sets an item in the Config struct, then saves it.
 func (cmd CommandBase) Set(key string, value interface{}) {
 	cmd.Finch.Config[key] = value
 	cmd.Finch.Config.Save()

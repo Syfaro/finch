@@ -14,6 +14,10 @@ import (
 // Config is a type used for storing configuration information.
 type Config map[string]interface{}
 
+// LoadConfig loads the saved config, if it exists.
+//
+// It looks for a FINCH_CONFIG environmental variable,
+// before falling back to a file name config.json.
 func LoadConfig() (*Config, error) {
 	fileName := os.Getenv("FINCH_CONFIG")
 	if fileName == "" {
@@ -31,6 +35,9 @@ func LoadConfig() (*Config, error) {
 	return &cfg, nil
 }
 
+// Save saves the current Config struct.
+//
+// It uses the same file as LoadConfig.
 func (c *Config) Save() error {
 	b, err := json.Marshal(c)
 	if err != nil {
