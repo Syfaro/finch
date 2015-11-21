@@ -39,12 +39,12 @@ func SimpleArgCommand(trigger string, args int, message string) bool {
 func (f *Finch) commandRouter(update tgbotapi.Update) {
 	for _, command := range f.Commands {
 		if command.WaitingForReply {
-			err := command.Command.ExecuteKeyboard(update, f)
+			err := command.Command.ExecuteKeyboard(update)
 			f.commandError(update, err)
 		}
 
 		if command.Command.ShouldExecute(update) {
-			err := command.Command.Execute(update, f)
+			err := command.Command.Execute(update)
 			f.commandError(update, err)
 		}
 	}
@@ -52,7 +52,7 @@ func (f *Finch) commandRouter(update tgbotapi.Update) {
 
 func (f *Finch) commandInit() {
 	for _, command := range f.Commands {
-		err := command.Command.Init(command)
+		err := command.Command.Init(command, f)
 		if err != nil {
 			log.Printf("Error starting plugin %s: %s\n", command.Command.Help().Name, err.Error())
 		} else {

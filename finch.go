@@ -2,14 +2,48 @@
 package finch
 
 import (
+	"encoding/json"
 	"github.com/syfaro/telegram-bot-api"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 )
 
 // Config is a type used for storing configuration information.
 type Config map[string]interface{}
+
+func LoadConfig() (*Config, error) {
+	fileName := os.Getenv("FINCH_CONFIG")
+	if fileName == "" {
+		fileName = "config.json"
+	}
+
+	f, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		return &Config{}, nil
+	}
+
+	var cfg Config
+	json.Unmarshal(f, &cfg)
+
+	return &cfg, nil
+}
+
+func (c *Config) Save() error {
+	b, err := json.Marshal(c)
+	if err != nil {
+		return err
+	}
+
+	fileName := os.Getenv("FINCH_CONFIG")
+	if fileName == "" {
+		fileName = "config.json"
+	}
+
+	return ioutil.WriteFile(fileName, b, 0600)
+}
 
 // Finch is a Telegram Bot, including API, Config, and Commands.
 type Finch struct {
@@ -36,7 +70,8 @@ func NewFinchWithClient(token string, client *http.Client) *Finch {
 	bot.API = api
 	bot.Commands = commands
 
-	bot.Config = make(Config)
+	c, _ := LoadConfig()
+	bot.Config = *c
 
 	return bot
 }

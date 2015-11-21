@@ -42,16 +42,17 @@ func (h Help) String(full bool) string {
 // Command contains the methods a must have.
 type Command interface {
 	Help() Help
-	Init(*CommandState) error
+	Init(*CommandState, *Finch) error
 	ShouldExecute(tgbotapi.Update) bool
-	Execute(tgbotapi.Update, *Finch) error
-	ExecuteKeyboard(tgbotapi.Update, *Finch) error
+	Execute(tgbotapi.Update) error
+	ExecuteKeyboard(tgbotapi.Update) error
 }
 
 // CommandBase is a default Command that handles various tasks for you,
 // and allows for you to not have to write empty methods.
 type CommandBase struct {
 	MyState *CommandState
+	Finch   *Finch
 }
 
 // Help returns an empty Help struct.
@@ -60,17 +61,31 @@ func (CommandBase) Help() Help { return Help{} }
 // Init sets MyState equal to the current CommandState.
 //
 // If you overwrite this method, you should still set MyState equal to CommandState!
-func (cmd *CommandBase) Init(c *CommandState) error { cmd.MyState = c; return nil }
+func (cmd *CommandBase) Init(c *CommandState, f *Finch) error {
+	cmd.MyState = c
+	cmd.Finch = f
+
+	return nil
+}
 
 // ShouldExecute returns false, you should overwrite this method.
 func (CommandBase) ShouldExecute(tgbotapi.Update) bool { return false }
 
 // Execute returns nil to show no error, you should overwrite this method.
-func (CommandBase) Execute(tgbotapi.Update, *Finch) error { return nil }
+func (CommandBase) Execute(tgbotapi.Update) error { return nil }
 
 // ExecuteKeyboard returns nil to show no error, you may overwrite this when
 // you are expecting to get a reply that is not a command.
-func (CommandBase) ExecuteKeyboard(tgbotapi.Update, *Finch) error { return nil }
+func (CommandBase) ExecuteKeyboard(tgbotapi.Update) error { return nil }
+
+func (cmd CommandBase) Get(key string) interface{} {
+	return cmd.Finch.Config[key]
+}
+
+func (cmd CommandBase) Set(key string, value interface{}) {
+	cmd.Finch.Config[key] = value
+	cmd.Finch.Config.Save()
+}
 
 // CommandState is the current state of a command.
 // It contains the command and if the command is waiting for a reply.

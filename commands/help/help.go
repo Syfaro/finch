@@ -26,12 +26,12 @@ func (cmd *helpCommand) ShouldExecute(update tgbotapi.Update) bool {
 	return finch.SimpleCommand("help", update.Message.Text)
 }
 
-func (cmd *helpCommand) Execute(update tgbotapi.Update, f *finch.Finch) error {
+func (cmd *helpCommand) Execute(update tgbotapi.Update) error {
 	b := &bytes.Buffer{}
 
 	b.WriteString("Loaded commands:\n\n")
 
-	for _, command := range f.Commands {
+	for _, command := range cmd.Finch.Commands {
 		help := command.Command.Help()
 
 		if help.Description == "" {
@@ -44,5 +44,5 @@ func (cmd *helpCommand) Execute(update tgbotapi.Update, f *finch.Finch) error {
 	msg := tgbotapi.NewMessage(update.Message.Chat.ID, b.String())
 	msg.ReplyToMessageID = update.Message.MessageID
 	msg.ReplyMarkup = tgbotapi.ModeMarkdown
-	return f.SendMessage(msg)
+	return cmd.Finch.SendMessage(msg)
 }

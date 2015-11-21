@@ -26,11 +26,11 @@ func (cmd *infoCommand) ShouldExecute(update tgbotapi.Update) bool {
 	return finch.SimpleCommand("info", update.Message.Text)
 }
 
-func (cmd *infoCommand) Execute(update tgbotapi.Update, f *finch.Finch) error {
+func (cmd *infoCommand) Execute(update tgbotapi.Update) error {
 	text := fmt.Sprintf("Your ID: %d\nChat ID: %d", update.Message.From.ID, update.Message.Chat.ID)
 
 	msg := tgbotapi.NewMessage(update.Message.Chat.ID, text)
 	msg.ReplyToMessageID = update.Message.MessageID
 
-	return f.SendMessage(msg)
+	return cmd.Finch.SendMessage(msg)
 }
