@@ -90,12 +90,12 @@ func (f *Finch) Start() {
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 86400
 
-	err := f.API.UpdatesChan(u)
+	updates, err := f.API.GetUpdatesChan(u)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	for update := range f.API.Updates {
+	for update := range updates {
 		f.commandRouter(update)
 	}
 }
@@ -114,6 +114,6 @@ func (f *Finch) StartWebhook(endpoint string) {
 func (f *Finch) SendMessage(message tgbotapi.MessageConfig) error {
 	message.Text = strings.Replace(message.Text, "@@", "@"+f.API.Self.UserName, -1)
 
-	_, err := f.API.SendMessage(message)
+	_, err := f.API.Send(message)
 	return err
 }

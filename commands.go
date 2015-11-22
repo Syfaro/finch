@@ -76,7 +76,7 @@ func (f *Finch) commandError(update tgbotapi.Update, err error) {
 
 	msg.ReplyToMessageID = update.Message.MessageID
 
-	_, err = f.API.SendMessage(msg)
+	_, err = f.API.Send(msg)
 	if err != nil {
 		log.Printf("An error happened processing an error!\n%s\n", err.Error())
 	}
