@@ -32,6 +32,9 @@ func SimpleCommand(trigger, message string) bool {
 // and the message is the text to check it against.
 func SimpleArgCommand(trigger string, args int, message string) bool {
 	matches := regexp.MustCompile("^/(" + trigger + ")(@\\w+)?( .+)?$").FindStringSubmatch(message)
+	if len(matches) < 4 {
+		return false
+	}
 	msgArgs := len(strings.Split(strings.Trim(matches[3], " "), " "))
 	return args == msgArgs
 }
