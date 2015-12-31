@@ -51,8 +51,8 @@ type Command interface {
 // CommandBase is a default Command that handles various tasks for you,
 // and allows for you to not have to write empty methods.
 type CommandBase struct {
-	MyState *CommandState
-	Finch   *Finch
+	*CommandState
+	*Finch
 }
 
 // Help returns an empty Help struct.
@@ -62,7 +62,7 @@ func (CommandBase) Help() Help { return Help{} }
 //
 // If you overwrite this method, you should still set MyState equal to CommandState!
 func (cmd *CommandBase) Init(c *CommandState, f *Finch) error {
-	cmd.MyState = c
+	cmd.CommandState = c
 	cmd.Finch = f
 
 	return nil

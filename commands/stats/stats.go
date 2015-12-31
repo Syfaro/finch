@@ -56,7 +56,7 @@ type infoCollector struct {
 }
 
 func (cmd *infoCollector) Init(c *finch.CommandState, f *finch.Finch) error {
-	cmd.MyState = c
+	cmd.CommandState = c
 	cmd.Finch = f
 
 	stored := cmd.Get("stats")
