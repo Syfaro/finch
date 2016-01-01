@@ -8,6 +8,7 @@ import (
 )
 
 var commands []*CommandState
+var inline InlineCommand
 
 // RegisterCommand adds a command to the bot.
 func RegisterCommand(cmd Command) {
@@ -15,6 +16,11 @@ func RegisterCommand(cmd Command) {
 		Command:         cmd,
 		WaitingForReply: false,
 	})
+}
+
+// SetInline sets the Inline Query handler.
+func SetInline(handler InlineCommand) {
+	inline = handler
 }
 
 // SimpleCommand generates a command regex and matches it against a message.
@@ -40,6 +46,13 @@ func SimpleArgCommand(trigger string, args int, message string) bool {
 }
 
 func (f *Finch) commandRouter(update tgbotapi.Update) {
+	if update.InlineQuery.ID != "" {
+		if err := f.Inline.Execute(f, update); err != nil {
+			f.commandError(update, err)
+		}
+		return
+	}
+
 	for _, command := range f.Commands {
 		if command.WaitingForReply {
 			err := command.Command.ExecuteKeyboard(update)

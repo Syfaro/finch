@@ -95,3 +95,8 @@ type CommandState struct {
 	Command         Command
 	WaitingForReply bool
 }
+
+// InlineCommand is a single command executed for an Inline Query.
+type InlineCommand interface {
+	Execute(*Finch, tgbotapi.Update) error
+}

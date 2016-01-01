@@ -57,6 +57,7 @@ type Finch struct {
 	API      *tgbotapi.BotAPI
 	Config   Config
 	Commands []*CommandState
+	Inline   InlineCommand
 }
 
 // NewFinch returns a new Finch instance, with Telegram API setup.
