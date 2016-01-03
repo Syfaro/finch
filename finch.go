@@ -118,3 +118,11 @@ func (f *Finch) SendMessage(message tgbotapi.MessageConfig) error {
 	_, err := f.API.Send(message)
 	return err
 }
+
+// QuickReply quickly sends a message as a reply.
+func (f *Finch) QuickReply(message tgbotapi.Message, text string) error {
+	msg := tgbotapi.NewMessage(message.Chat.ID, text)
+	msg.ReplyToMessageID = message.MessageID
+
+	return f.SendMessage(msg)
+}
