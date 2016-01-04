@@ -2,7 +2,7 @@ package finchcommandcancel
 
 import (
 	"github.com/syfaro/finch"
-	"github.com/syfaro/telegram-bot-api"
+	"gopkg.in/telegram-bot-api.v1"
 )
 
 func init() {

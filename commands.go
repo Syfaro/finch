@@ -1,7 +1,7 @@
 package finch
 
 import (
-	"github.com/syfaro/telegram-bot-api"
+	"gopkg.in/telegram-bot-api.v1"
 	"log"
 	"regexp"
 	"strings"

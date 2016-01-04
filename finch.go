@@ -3,7 +3,7 @@ package finch
 
 import (
 	"encoding/json"
-	"github.com/syfaro/telegram-bot-api"
+	"gopkg.in/telegram-bot-api.v1"
 	"io/ioutil"
 	"log"
 	"net/http"

@@ -3,7 +3,7 @@ package finchcommandstats
 import (
 	"bytes"
 	"github.com/syfaro/finch"
-	"github.com/syfaro/telegram-bot-api"
+	"gopkg.in/telegram-bot-api.v1"
 	"strconv"
 )
 
