@@ -1,7 +1,7 @@
 package finch
 
 import (
-	"gopkg.in/telegram-bot-api.v1"
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
 	"regexp"
 	"strings"

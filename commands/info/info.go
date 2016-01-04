@@ -2,8 +2,8 @@ package finchcommandinfo
 
 import (
 	"fmt"
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/syfaro/finch"
-	"github.com/syfaro/telegram-bot-api"
 )
 
 func init() {

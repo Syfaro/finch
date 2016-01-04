@@ -2,7 +2,7 @@ package finch
 
 import (
 	"bytes"
-	"gopkg.in/telegram-bot-api.v1"
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 // Help contains information about a command,

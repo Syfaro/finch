@@ -2,8 +2,8 @@ package finchcommandstats
 
 import (
 	"bytes"
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/syfaro/finch"
-	"gopkg.in/telegram-bot-api.v1"
 	"strconv"
 )
 
