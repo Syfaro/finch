@@ -12,10 +12,7 @@ var inline InlineCommand
 
 // RegisterCommand adds a command to the bot.
 func RegisterCommand(cmd Command) {
-	commands = append(commands, &CommandState{
-		Command:         cmd,
-		WaitingForReply: false,
-	})
+	commands = append(commands, NewCommandState(cmd))
 }
 
 // SetInline sets the Inline Query handler.
@@ -54,9 +51,10 @@ func (f *Finch) commandRouter(update tgbotapi.Update) {
 	}
 
 	for _, command := range f.Commands {
-		if command.WaitingForReply {
+		if command.IsWaiting(update.Message.From.ID) {
 			err := command.Command.ExecuteKeyboard(update)
 			f.commandError(update, err)
+			return
 		}
 
 		if command.Command.ShouldExecute(update) {

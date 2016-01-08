@@ -74,8 +74,8 @@ func (CommandBase) ShouldExecute(tgbotapi.Update) bool { return false }
 // Execute returns nil to show no error, you should overwrite this method.
 func (CommandBase) Execute(tgbotapi.Update) error { return nil }
 
-// ExecuteKeyboard returns nil to show no error, you may overwrite this when
-// you are expecting to get a reply that is not a command.
+// ExecuteKeyboard returns nil to show no error, you may overwrite this
+// when you are expecting to get a reply that is not a command.
 func (CommandBase) ExecuteKeyboard(tgbotapi.Update) error { return nil }
 
 // Get fetches an item from the Config struct.
@@ -89,11 +89,42 @@ func (cmd CommandBase) Set(key string, value interface{}) {
 	cmd.Finch.Config.Save()
 }
 
+type userWait map[int]bool
+
 // CommandState is the current state of a command.
 // It contains the command and if the command is waiting for a reply.
 type CommandState struct {
-	Command         Command
-	WaitingForReply bool
+	Command             Command
+	waitingForReplyUser userWait
+}
+
+// NewCommandState creates a new CommandState with an initialized map.
+func NewCommandState(cmd Command) *CommandState {
+	return &CommandState{
+		Command:             cmd,
+		waitingForReplyUser: make(userWait),
+	}
+}
+
+// IsWaiting checks if the current CommandState is waiting for input from
+// this user.
+func (state *CommandState) IsWaiting(user int) bool {
+	if v, ok := state.waitingForReplyUser[user]; ok {
+		return v
+	}
+
+	return false
+}
+
+// SetWaiting sets that the bot should expect user input from this user.
+func (state *CommandState) SetWaiting(user int) {
+	state.waitingForReplyUser[user] = true
+}
+
+// ReleaseWaiting sets that the bot should not expect any input from
+// this user.
+func (state *CommandState) ReleaseWaiting(user int) {
+	state.waitingForReplyUser[user] = false
 }
 
 // InlineCommand is a single command executed for an Inline Query.

@@ -25,5 +25,7 @@ func (cmd *cancelCommand) Execute(update tgbotapi.Update) error {
 		Selective:    true,
 	}
 
+	cmd.ReleaseWaiting(update.Message.From.ID)
+
 	return cmd.Finch.SendMessage(msg)
 }
