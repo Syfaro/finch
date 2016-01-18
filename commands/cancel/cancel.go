@@ -29,3 +29,9 @@ func (cmd *cancelCommand) Execute(update tgbotapi.Update) error {
 
 	return cmd.Finch.SendMessage(msg)
 }
+
+func (cmd *cancelCommand) Help() finch.Help {
+	return finch.Help{
+		Name: "Cancel",
+	}
+}
