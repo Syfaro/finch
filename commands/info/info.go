@@ -19,6 +19,9 @@ func (cmd *infoCommand) Help() finch.Help {
 		Name:        "Info",
 		Description: "Displays information about the currently requesting user",
 		Example:     "/info@@",
+		Botfather: [][]string{
+			[]string{"info", "Information about the current user"},
+		},
 	}
 }
 

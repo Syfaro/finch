@@ -26,6 +26,9 @@ func (cmd *infoCommand) Help() finch.Help {
 		Name:        "Stats",
 		Description: "Displays some statistics",
 		Example:     "/stats@@",
+		Botfather: [][]string{
+			[]string{"stats", "Displays some statistics about bot usage"},
+		},
 	}
 }
 

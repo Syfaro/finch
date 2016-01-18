@@ -11,6 +11,7 @@ type Help struct {
 	Name        string
 	Description string
 	Example     string
+	Botfather   [][]string
 }
 
 // String converts a Help struct into a pretty string.
@@ -35,6 +36,26 @@ func (h Help) String(full bool) string {
 	}
 
 	b.WriteString("\n")
+
+	return b.String()
+}
+
+// BotfatherString formats a Help struct into something for Botfather.
+func (h Help) BotfatherString() string {
+	if len(h.Botfather) == 0 {
+		return ""
+	}
+
+	b := bytes.Buffer{}
+
+	for k, v := range h.Botfather {
+		b.WriteString(v[0])
+		b.WriteString(" - ")
+		b.WriteString(v[1])
+		if k+1 != len(h.Botfather) {
+			b.WriteString("\n")
+		}
+	}
 
 	return b.String()
 }

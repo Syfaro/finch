@@ -33,5 +33,8 @@ func (cmd *cancelCommand) Execute(update tgbotapi.Update) error {
 func (cmd *cancelCommand) Help() finch.Help {
 	return finch.Help{
 		Name: "Cancel",
+		Botfather: [][]string{
+			[]string{"cancel", "Cancels the current command"},
+		},
 	}
 }
