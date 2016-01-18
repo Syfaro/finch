@@ -77,6 +77,7 @@ func NewFinchWithClient(token string, client *http.Client) *Finch {
 
 	bot.API = api
 	bot.Commands = commands
+	bot.Inline = inline
 
 	c, _ := LoadConfig()
 	bot.Config = *c

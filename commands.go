@@ -44,8 +44,13 @@ func SimpleArgCommand(trigger string, args int, message string) bool {
 
 func (f *Finch) commandRouter(update tgbotapi.Update) {
 	if update.InlineQuery.ID != "" {
+		if f.Inline == nil {
+			log.Println("Got inline query, but no handler is set!")
+			return
+		}
+
 		if err := f.Inline.Execute(f, update); err != nil {
-			f.commandError(update, err)
+			log.Printf("Error processing inline query:\n%+v\n", err)
 		}
 		return
 	}
