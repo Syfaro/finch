@@ -16,12 +16,7 @@ type helpCommand struct {
 
 func (cmd *helpCommand) Help() finch.Help {
 	return finch.Help{
-		Name:        "Help",
-		Description: "Displays loaded commands and their help text",
-		Example:     "/help@@",
-		Botfather: [][]string{
-			[]string{"help", "Displays available commands and help information"},
-		},
+		Name: "Help",
 	}
 }
 
