@@ -66,7 +66,8 @@ type Command interface {
 	Init(*CommandState, *Finch) error
 	ShouldExecute(tgbotapi.Message) bool
 	Execute(tgbotapi.Message) error
-	ExecuteKeyboard(tgbotapi.Message) error
+	ExecuteWaiting(tgbotapi.Message) error
+	IsHighPriority(tgbotapi.Message) bool
 }
 
 // CommandBase is a default Command that handles various tasks for you,
@@ -96,9 +97,14 @@ func (CommandBase) ShouldExecute(tgbotapi.Message) bool { return false }
 // Execute returns nil to show no error, you should overwrite this method.
 func (CommandBase) Execute(tgbotapi.Message) error { return nil }
 
-// ExecuteKeyboard returns nil to show no error, you may overwrite this
+// ExecuteWaiting returns nil to show no error, you may overwrite this
 // when you are expecting to get a reply that is not a command.
-func (CommandBase) ExecuteKeyboard(tgbotapi.Message) error { return nil }
+func (CommandBase) ExecuteWaiting(tgbotapi.Message) error { return nil }
+
+// IsHighPriority return false, you should overwrite this function to
+// return true if your command needs to execute before checking for
+// commands that are waiting for a reply or keyboard input.
+func (CommandBase) IsHighPriority(tgbotapi.Message) bool { return false }
 
 // Get fetches an item from the Config struct.
 func (cmd CommandBase) Get(key string) interface{} {
@@ -151,5 +157,5 @@ func (state *CommandState) ReleaseWaiting(user int) {
 
 // InlineCommand is a single command executed for an Inline Query.
 type InlineCommand interface {
-	Execute(*Finch, tgbotapi.Update) error
+	Execute(*Finch, tgbotapi.InlineQuery) error
 }
