@@ -3,7 +3,7 @@ package finch
 
 import (
 	"encoding/json"
-	"github.com/go-telegram-bot-api/telegram-bot-api"
+	"gopkg.in/telegram-bot-api.v2"
 	"io/ioutil"
 	"log"
 	"net/http"

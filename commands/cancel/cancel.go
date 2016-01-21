@@ -1,8 +1,8 @@
-package finchcommandcancel
+package commands
 
 import (
-	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/syfaro/finch"
+	"gopkg.in/telegram-bot-api.v2"
 )
 
 func init() {

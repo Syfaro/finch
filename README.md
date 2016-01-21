@@ -2,7 +2,7 @@
 
 A Golang Telegram Bot framework
 
-Unlike the [Telegram Bot API](https://github.com/Syfaro/telegram-bot-api), this is a framework for writing commands, not just low level dealings with the API directly.
+Unlike the [Telegram Bot API](https://github.com/go-telegram-bot-api/telegram-bot-api), this is a framework for writing commands, not just low level dealings with the API directly.
 
 It currently is in its early infancy and needs lots of work. Expect frequent breaking changes.
 
@@ -50,3 +50,5 @@ func main() {
 	http.ListenAndServeTLS("0.0.0.0:8443", "cert.pem", "key.pem", nil)
 }
 ```
+
+A full bot example may be found at [selectionsbot](https://github.com/Syfaro/selectionsbot).
