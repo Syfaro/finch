@@ -13,7 +13,7 @@ type cancelCommand struct {
 	finch.CommandBase
 }
 
-func (cmd *cancelCommand) ShouldExecute(message tgbotapi.Message) bool {
+func (cancelCommand) ShouldExecute(message tgbotapi.Message) bool {
 	return finch.SimpleCommand("cancel", message.Text)
 }
 
@@ -25,12 +25,18 @@ func (cmd *cancelCommand) Execute(message tgbotapi.Message) error {
 		Selective:    true,
 	}
 
-	cmd.ReleaseWaiting(message.From.ID)
+	for _, command := range cmd.Finch.Commands {
+		command.ReleaseWaiting(message.From.ID)
+	}
 
 	return cmd.Finch.SendMessage(msg)
 }
 
-func (cmd *cancelCommand) Help() finch.Help {
+func (cmd cancelCommand) IsHighPriority(tgbotapi.Message) bool {
+	return true
+}
+
+func (cancelCommand) Help() finch.Help {
 	return finch.Help{
 		Name: "Cancel",
 		Botfather: [][]string{
