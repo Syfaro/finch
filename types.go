@@ -64,9 +64,9 @@ func (h Help) BotfatherString() string {
 type Command interface {
 	Help() Help
 	Init(*CommandState, *Finch) error
-	ShouldExecute(tgbotapi.Update) bool
-	Execute(tgbotapi.Update) error
-	ExecuteKeyboard(tgbotapi.Update) error
+	ShouldExecute(tgbotapi.Message) bool
+	Execute(tgbotapi.Message) error
+	ExecuteKeyboard(tgbotapi.Message) error
 }
 
 // CommandBase is a default Command that handles various tasks for you,
@@ -90,14 +90,14 @@ func (cmd *CommandBase) Init(c *CommandState, f *Finch) error {
 }
 
 // ShouldExecute returns false, you should overwrite this method.
-func (CommandBase) ShouldExecute(tgbotapi.Update) bool { return false }
+func (CommandBase) ShouldExecute(tgbotapi.Message) bool { return false }
 
 // Execute returns nil to show no error, you should overwrite this method.
-func (CommandBase) Execute(tgbotapi.Update) error { return nil }
+func (CommandBase) Execute(tgbotapi.Message) error { return nil }
 
 // ExecuteKeyboard returns nil to show no error, you may overwrite this
 // when you are expecting to get a reply that is not a command.
-func (CommandBase) ExecuteKeyboard(tgbotapi.Update) error { return nil }
+func (CommandBase) ExecuteKeyboard(tgbotapi.Message) error { return nil }
 
 // Get fetches an item from the Config struct.
 func (cmd CommandBase) Get(key string) interface{} {

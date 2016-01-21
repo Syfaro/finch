@@ -32,11 +32,11 @@ func (cmd *infoCommand) Help() finch.Help {
 	}
 }
 
-func (cmd *infoCommand) ShouldExecute(update tgbotapi.Update) bool {
-	return finch.SimpleCommand("stats", update.Message.Text)
+func (cmd *infoCommand) ShouldExecute(message tgbotapi.Message) bool {
+	return finch.SimpleCommand("stats", message.Text)
 }
 
-func (cmd *infoCommand) Execute(update tgbotapi.Update) error {
+func (cmd *infoCommand) Execute(message tgbotapi.Message) error {
 	b := &bytes.Buffer{}
 
 	b.WriteString("Users seen\n\n")
@@ -48,8 +48,8 @@ func (cmd *infoCommand) Execute(update tgbotapi.Update) error {
 		b.WriteString("\n")
 	}
 
-	msg := tgbotapi.NewMessage(update.Message.Chat.ID, b.String())
-	msg.ReplyToMessageID = update.Message.MessageID
+	msg := tgbotapi.NewMessage(message.Chat.ID, b.String())
+	msg.ReplyToMessageID = message.MessageID
 
 	return cmd.Finch.SendMessage(msg)
 }
@@ -78,15 +78,15 @@ func (cmd *infoCollector) Help() finch.Help {
 	return finch.Help{Name: "Stats Collector"}
 }
 
-func (cmd *infoCollector) ShouldExecute(update tgbotapi.Update) bool {
+func (cmd *infoCollector) ShouldExecute(message tgbotapi.Message) bool {
 	return true
 }
 
-func (cmd *infoCollector) Execute(update tgbotapi.Update) error {
-	if _, ok := userMessages[update.Message.From.String()]; !ok {
-		userMessages[update.Message.From.String()] = 1
+func (cmd *infoCollector) Execute(message tgbotapi.Message) error {
+	if _, ok := userMessages[message.From.String()]; !ok {
+		userMessages[message.From.String()] = 1
 	} else {
-		userMessages[update.Message.From.String()] += 1
+		userMessages[message.From.String()] += 1
 	}
 
 	cmd.CommandBase.Set("stats", userMessages)

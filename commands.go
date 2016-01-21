@@ -57,14 +57,14 @@ func (f *Finch) commandRouter(update tgbotapi.Update) {
 
 	for _, command := range f.Commands {
 		if command.IsWaiting(update.Message.From.ID) {
-			err := command.Command.ExecuteKeyboard(update)
-			f.commandError(update, err)
+			err := command.Command.ExecuteKeyboard(update.Message)
+			f.commandError(update.Message, err)
 			return
 		}
 
-		if command.Command.ShouldExecute(update) {
-			err := command.Command.Execute(update)
-			f.commandError(update, err)
+		if command.Command.ShouldExecute(update.Message) {
+			err := command.Command.Execute(update.Message)
+			f.commandError(update.Message, err)
 		}
 	}
 }
@@ -80,7 +80,7 @@ func (f *Finch) commandInit() {
 	}
 }
 
-func (f *Finch) commandError(update tgbotapi.Update, err error) {
+func (f *Finch) commandError(message tgbotapi.Message, err error) {
 	if err == nil {
 		return
 	}
@@ -88,12 +88,12 @@ func (f *Finch) commandError(update tgbotapi.Update, err error) {
 	var msg tgbotapi.MessageConfig
 
 	if f.API.Debug {
-		msg = tgbotapi.NewMessage(update.Message.Chat.ID, err.Error())
+		msg = tgbotapi.NewMessage(message.Chat.ID, err.Error())
 	} else {
-		msg = tgbotapi.NewMessage(update.Message.Chat.ID, "An error occured processing a command!")
+		msg = tgbotapi.NewMessage(message.Chat.ID, "An error occured processing a command!")
 	}
 
-	msg.ReplyToMessageID = update.Message.MessageID
+	msg.ReplyToMessageID = message.MessageID
 
 	_, err = f.API.Send(msg)
 	if err != nil {

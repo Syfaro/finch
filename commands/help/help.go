@@ -25,14 +25,14 @@ func (cmd *helpCommand) Help() finch.Help {
 	}
 }
 
-func (cmd *helpCommand) ShouldExecute(update tgbotapi.Update) bool {
-	return finch.SimpleCommand("help", update.Message.Text)
+func (cmd *helpCommand) ShouldExecute(message tgbotapi.Message) bool {
+	return finch.SimpleCommand("help", message.Text)
 }
 
-func (cmd *helpCommand) Execute(update tgbotapi.Update) error {
+func (cmd *helpCommand) Execute(message tgbotapi.Message) error {
 	b := &bytes.Buffer{}
 
-	if update.Message.CommandArguments() == "botfather" {
+	if message.CommandArguments() == "botfather" {
 		for k, command := range cmd.Finch.Commands {
 			help := command.Command.Help().BotfatherString()
 
@@ -57,8 +57,8 @@ func (cmd *helpCommand) Execute(update tgbotapi.Update) error {
 		}
 	}
 
-	msg := tgbotapi.NewMessage(update.Message.Chat.ID, b.String())
-	msg.ReplyToMessageID = update.Message.MessageID
+	msg := tgbotapi.NewMessage(message.Chat.ID, b.String())
+	msg.ReplyToMessageID = message.MessageID
 	msg.ReplyMarkup = tgbotapi.ModeMarkdown
 	return cmd.Finch.SendMessage(msg)
 }

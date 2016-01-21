@@ -25,15 +25,15 @@ func (cmd *infoCommand) Help() finch.Help {
 	}
 }
 
-func (cmd *infoCommand) ShouldExecute(update tgbotapi.Update) bool {
-	return finch.SimpleCommand("info", update.Message.Text)
+func (cmd *infoCommand) ShouldExecute(message tgbotapi.Message) bool {
+	return finch.SimpleCommand("info", message.Text)
 }
 
-func (cmd *infoCommand) Execute(update tgbotapi.Update) error {
-	text := fmt.Sprintf("Your ID: %d\nChat ID: %d", update.Message.From.ID, update.Message.Chat.ID)
+func (cmd *infoCommand) Execute(message tgbotapi.Message) error {
+	text := fmt.Sprintf("Your ID: %d\nChat ID: %d", message.From.ID, message.Chat.ID)
 
-	msg := tgbotapi.NewMessage(update.Message.Chat.ID, text)
-	msg.ReplyToMessageID = update.Message.MessageID
+	msg := tgbotapi.NewMessage(message.Chat.ID, text)
+	msg.ReplyToMessageID = message.MessageID
 
 	return cmd.Finch.SendMessage(msg)
 }
