@@ -79,9 +79,10 @@ type CommandBase struct {
 // Help returns an empty Help struct.
 func (CommandBase) Help() Help { return Help{} }
 
-// Init sets MyState equal to the current CommandState.
+// Init sets CommandState equal to the current CommandState.
 //
-// If you overwrite this method, you should still set MyState equal to CommandState!
+// If you overwrite this method, you must still set CommandState and Finch
+// to the correct values!
 func (cmd *CommandBase) Init(c *CommandState, f *Finch) error {
 	cmd.CommandState = c
 	cmd.Finch = f
