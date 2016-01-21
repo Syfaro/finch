@@ -14,17 +14,17 @@ type helpCommand struct {
 	finch.CommandBase
 }
 
-func (cmd *helpCommand) Help() finch.Help {
+func (cmd helpCommand) Help() finch.Help {
 	return finch.Help{
 		Name: "Help",
 	}
 }
 
-func (cmd *helpCommand) ShouldExecute(message tgbotapi.Message) bool {
+func (cmd helpCommand) ShouldExecute(message tgbotapi.Message) bool {
 	return finch.SimpleCommand("help", message.Text)
 }
 
-func (cmd *helpCommand) Execute(message tgbotapi.Message) error {
+func (cmd helpCommand) Execute(message tgbotapi.Message) error {
 	b := &bytes.Buffer{}
 
 	if message.CommandArguments() == "botfather" {

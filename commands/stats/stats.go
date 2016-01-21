@@ -21,7 +21,7 @@ type infoCommand struct {
 	finch.CommandBase
 }
 
-func (cmd *infoCommand) Help() finch.Help {
+func (cmd infoCommand) Help() finch.Help {
 	return finch.Help{
 		Name:        "Stats",
 		Description: "Displays some statistics",
@@ -32,11 +32,11 @@ func (cmd *infoCommand) Help() finch.Help {
 	}
 }
 
-func (cmd *infoCommand) ShouldExecute(message tgbotapi.Message) bool {
+func (cmd infoCommand) ShouldExecute(message tgbotapi.Message) bool {
 	return finch.SimpleCommand("stats", message.Text)
 }
 
-func (cmd *infoCommand) Execute(message tgbotapi.Message) error {
+func (cmd infoCommand) Execute(message tgbotapi.Message) error {
 	b := &bytes.Buffer{}
 
 	b.WriteString("Users seen\n\n")
@@ -58,7 +58,7 @@ type infoCollector struct {
 	finch.CommandBase
 }
 
-func (cmd *infoCollector) Init(c *finch.CommandState, f *finch.Finch) error {
+func (cmd infoCollector) Init(c *finch.CommandState, f *finch.Finch) error {
 	cmd.CommandState = c
 	cmd.Finch = f
 
@@ -74,15 +74,15 @@ func (cmd *infoCollector) Init(c *finch.CommandState, f *finch.Finch) error {
 	return nil
 }
 
-func (cmd *infoCollector) Help() finch.Help {
+func (cmd infoCollector) Help() finch.Help {
 	return finch.Help{Name: "Stats Collector"}
 }
 
-func (cmd *infoCollector) ShouldExecute(message tgbotapi.Message) bool {
+func (cmd infoCollector) ShouldExecute(message tgbotapi.Message) bool {
 	return true
 }
 
-func (cmd *infoCollector) Execute(message tgbotapi.Message) error {
+func (cmd infoCollector) Execute(message tgbotapi.Message) error {
 	if _, ok := userMessages[message.From.String()]; !ok {
 		userMessages[message.From.String()] = 1
 	} else {
