@@ -1,6 +1,7 @@
 package finch
 
 import (
+	"github.com/getsentry/raven-go"
 	"gopkg.in/telegram-bot-api.v2"
 	"log"
 	"regexp"
@@ -49,6 +50,14 @@ func SimpleArgCommand(trigger string, args int, message string) bool {
 
 // commandRouter is run for every update, and runs the correct commands.
 func (f *Finch) commandRouter(update tgbotapi.Update) {
+	defer func() {
+		if r := recover(); r != nil {
+			if r != nil && sentryEnabled {
+				raven.CaptureError(r.(error), nil)
+			}
+		}
+	}()
+
 	// if we've gotten an inline query, handle it
 	if update.InlineQuery.ID != "" {
 		// if we do not have a handler, return
@@ -61,6 +70,9 @@ func (f *Finch) commandRouter(update tgbotapi.Update) {
 		// execute inline handler function
 		if err := f.Inline.Execute(f, update.InlineQuery); err != nil {
 			// no way to show inline error to user, so log it
+			if sentryEnabled {
+				raven.CaptureError(err, nil)
+			}
 			log.Printf("Error processing inline query:\n%+v\n", err)
 		}
 
@@ -82,7 +94,7 @@ func (f *Finch) commandRouter(update tgbotapi.Update) {
 		// execute the command
 		if err := command.Command.Execute(update.Message); err != nil {
 			// some kind of error happened, send a message to sender
-			f.commandError(update.Message, err)
+			f.commandError(command.Command.Help().Name, update.Message, err)
 		}
 	}
 
@@ -93,7 +105,7 @@ func (f *Finch) commandRouter(update tgbotapi.Update) {
 			// execute the waiting command
 			if err := command.Command.ExecuteWaiting(update.Message); err != nil {
 				// some kind of error happened, send a message to sender
-				f.commandError(update.Message, err)
+				f.commandError(command.Command.Help().Name, update.Message, err)
 			}
 
 			// command has already dealt with this, contine to next
@@ -110,7 +122,7 @@ func (f *Finch) commandRouter(update tgbotapi.Update) {
 			// execute the command
 			if err := command.Command.Execute(update.Message); err != nil {
 				// some kind of error happened, send a message to sender
-				f.commandError(update.Message, err)
+				f.commandError(command.Command.Help().Name, update.Message, err)
 			}
 		}
 	}
@@ -125,6 +137,9 @@ func (f *Finch) commandInit() {
 		if err != nil {
 			// it failed, show the error
 			log.Printf("Error starting command %s: %s\n", command.Command.Help().Name, err.Error())
+			if sentryEnabled {
+				raven.CaptureError(err, map[string]string{"command": command.Command.Help().Name})
+			}
 		} else {
 			// command started successfully
 			log.Printf("Started command %s!", command.Command.Help().Name)
@@ -133,7 +148,7 @@ func (f *Finch) commandInit() {
 }
 
 // handle some kind of error
-func (f *Finch) commandError(message tgbotapi.Message, err error) {
+func (f *Finch) commandError(commandName string, message tgbotapi.Message, err error) {
 	var msg tgbotapi.MessageConfig
 
 	// check if in Debug mode
@@ -149,9 +164,16 @@ func (f *Finch) commandError(message tgbotapi.Message, err error) {
 
 	msg.ReplyToMessageID = message.MessageID
 
+	if sentryEnabled {
+		raven.CaptureError(err, map[string]string{"command": commandName})
+	}
+
 	// send the error message
 	_, err = f.API.Send(msg)
 	if err != nil {
 		log.Printf("An error happened processing an error!\n%s\n", err.Error())
+		if sentryEnabled {
+			raven.CaptureError(err, nil)
+		}
 	}
 }

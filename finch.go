@@ -3,6 +3,7 @@ package finch
 
 import (
 	"encoding/json"
+	"github.com/getsentry/raven-go"
 	"gopkg.in/telegram-bot-api.v2"
 	"io/ioutil"
 	"log"
@@ -13,6 +14,8 @@ import (
 
 // Config is a type used for storing configuration information.
 type Config map[string]interface{}
+
+var sentryEnabled bool = false
 
 // LoadConfig loads the saved config, if it exists.
 //
@@ -41,6 +44,10 @@ func LoadConfig() (*Config, error) {
 func (c *Config) Save() error {
 	b, err := json.Marshal(c)
 	if err != nil {
+		if sentryEnabled {
+			raven.CaptureErrorAndWait(err, nil)
+		}
+
 		return err
 	}
 
@@ -87,6 +94,11 @@ func NewFinchWithClient(token string, client *http.Client) *Finch {
 
 // Start initializes commands, and starts listening for messages.
 func (f *Finch) Start() {
+	if v, ok := f.Config["sentry_dsn"]; ok {
+		sentryEnabled = true
+		raven.SetDSN(v.(string))
+	}
+
 	f.commandInit()
 
 	u := tgbotapi.NewUpdate(0)
@@ -94,11 +106,15 @@ func (f *Finch) Start() {
 
 	updates, err := f.API.GetUpdatesChan(u)
 	if err != nil {
+		if sentryEnabled {
+			raven.CaptureErrorAndWait(err, nil)
+		}
+
 		log.Fatal(err)
 	}
 
 	for update := range updates {
-		f.commandRouter(update)
+		go f.commandRouter(update)
 	}
 }
 
@@ -117,6 +133,9 @@ func (f *Finch) SendMessage(message tgbotapi.MessageConfig) error {
 	message.Text = strings.Replace(message.Text, "@@", "@"+f.API.Self.UserName, -1)
 
 	_, err := f.API.Send(message)
+	if err != nil && sentryEnabled {
+		raven.CaptureError(err, nil)
+	}
 	return err
 }
 
