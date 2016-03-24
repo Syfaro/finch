@@ -3,7 +3,7 @@ package commands
 import (
 	"bytes"
 	"github.com/syfaro/finch"
-	"gopkg.in/telegram-bot-api.v2"
+	"gopkg.in/telegram-bot-api.v3"
 )
 
 func init() {

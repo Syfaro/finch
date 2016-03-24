@@ -2,7 +2,7 @@ package finch
 
 import (
 	"github.com/getsentry/raven-go"
-	"gopkg.in/telegram-bot-api.v2"
+	"gopkg.in/telegram-bot-api.v3"
 	"log"
 	"regexp"
 	"strings"
