@@ -65,6 +65,7 @@ type Finch struct {
 	Config   Config
 	Commands []*CommandState
 	Inline   InlineCommand
+	Callback CallbackCommand
 }
 
 // NewFinch returns a new Finch instance, with Telegram API setup.
@@ -85,6 +86,7 @@ func NewFinchWithClient(token string, client *http.Client) *Finch {
 	bot.API = api
 	bot.Commands = commands
 	bot.Inline = inline
+	bot.Callback = callback
 
 	c, _ := LoadConfig()
 	bot.Config = *c

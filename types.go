@@ -159,3 +159,9 @@ func (state *CommandState) ReleaseWaiting(user int) {
 type InlineCommand interface {
 	Execute(*Finch, tgbotapi.InlineQuery) error
 }
+
+// CallbackCommand is a single command executed for an
+// Inline Query Callback.
+type CallbackCommand interface {
+	Execute(*Finch, tgbotapi.CallbackQuery) error
+}

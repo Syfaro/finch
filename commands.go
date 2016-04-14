@@ -10,6 +10,7 @@ import (
 
 var commands []*CommandState
 var inline InlineCommand
+var callback CallbackCommand
 
 // RegisterCommand adds a command to the bot.
 func RegisterCommand(cmd Command) {
@@ -19,6 +20,11 @@ func RegisterCommand(cmd Command) {
 // SetInline sets the Inline Query handler.
 func SetInline(handler InlineCommand) {
 	inline = handler
+}
+
+// SetCallback sets the Callback Query handler.
+func SetCallback(handler CallbackCommand) {
+	callback = handler
 }
 
 // SimpleCommand generates a command regex and matches it against a message.
@@ -77,6 +83,22 @@ func (f *Finch) commandRouter(update tgbotapi.Update) {
 		}
 
 		return
+	}
+
+	// if we've gotten a callback query, handle it
+	if update.CallbackQuery != nil {
+		if f.Callback == nil {
+			log.Println("Got callback query, but no handler is set!")
+
+			return
+		}
+
+		if err := f.Callback.Execute(f, *update.CallbackQuery); err != nil {
+			if sentryEnabled {
+				raven.CaptureError(err, nil)
+			}
+			log.Printf("Error processing callback query:\n%+v\n", err)
+		}
 	}
 
 	// nothing past here can handle this!
