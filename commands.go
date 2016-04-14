@@ -2,7 +2,7 @@ package finch
 
 import (
 	"github.com/getsentry/raven-go"
-	"gopkg.in/telegram-bot-api.v3"
+	"gopkg.in/telegram-bot-api.v4"
 	"log"
 	"regexp"
 	"strings"
@@ -59,7 +59,7 @@ func (f *Finch) commandRouter(update tgbotapi.Update) {
 	}()
 
 	// if we've gotten an inline query, handle it
-	if update.InlineQuery.ID != "" {
+	if update.InlineQuery != nil {
 		// if we do not have a handler, return
 		if f.Inline == nil {
 			log.Println("Got inline query, but no handler is set!")
@@ -68,7 +68,7 @@ func (f *Finch) commandRouter(update tgbotapi.Update) {
 		}
 
 		// execute inline handler function
-		if err := f.Inline.Execute(f, update.InlineQuery); err != nil {
+		if err := f.Inline.Execute(f, *update.InlineQuery); err != nil {
 			// no way to show inline error to user, so log it
 			if sentryEnabled {
 				raven.CaptureError(err, nil)
@@ -79,22 +79,27 @@ func (f *Finch) commandRouter(update tgbotapi.Update) {
 		return
 	}
 
+	// nothing past here can handle this!
+	if update.Message == nil {
+		return
+	}
+
 	// first loop to check for any high priority commands
 	for _, command := range f.Commands {
 		// if it isn't a high priority command, ignore it
-		if !command.Command.IsHighPriority(update.Message) {
+		if !command.Command.IsHighPriority(*update.Message) {
 			continue
 		}
 
 		// if we shouldn't execute this command, ignore it
-		if !command.Command.ShouldExecute(update.Message) {
+		if !command.Command.ShouldExecute(*update.Message) {
 			continue
 		}
 
 		// execute the command
-		if err := command.Command.Execute(update.Message); err != nil {
+		if err := command.Command.Execute(*update.Message); err != nil {
 			// some kind of error happened, send a message to sender
-			f.commandError(command.Command.Help().Name, update.Message, err)
+			f.commandError(command.Command.Help().Name, *update.Message, err)
 		}
 	}
 
@@ -103,9 +108,9 @@ func (f *Finch) commandRouter(update tgbotapi.Update) {
 		// check if we're waiting for some text
 		if command.IsWaiting(update.Message.From.ID) {
 			// execute the waiting command
-			if err := command.Command.ExecuteWaiting(update.Message); err != nil {
+			if err := command.Command.ExecuteWaiting(*update.Message); err != nil {
 				// some kind of error happened, send a message to sender
-				f.commandError(command.Command.Help().Name, update.Message, err)
+				f.commandError(command.Command.Help().Name, *update.Message, err)
 			}
 
 			// command has already dealt with this, contine to next
@@ -113,16 +118,16 @@ func (f *Finch) commandRouter(update tgbotapi.Update) {
 		}
 
 		// we already did high priority commands, so skip now
-		if command.Command.IsHighPriority(update.Message) {
+		if command.Command.IsHighPriority(*update.Message) {
 			continue
 		}
 
 		// check if we should execute this command
-		if command.Command.ShouldExecute(update.Message) {
+		if command.Command.ShouldExecute(*update.Message) {
 			// execute the command
-			if err := command.Command.Execute(update.Message); err != nil {
+			if err := command.Command.Execute(*update.Message); err != nil {
 				// some kind of error happened, send a message to sender
-				f.commandError(command.Command.Help().Name, update.Message, err)
+				f.commandError(command.Command.Help().Name, *update.Message, err)
 			}
 		}
 	}

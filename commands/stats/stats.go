@@ -3,7 +3,7 @@ package commands
 import (
 	"bytes"
 	"github.com/syfaro/finch"
-	"gopkg.in/telegram-bot-api.v3"
+	"gopkg.in/telegram-bot-api.v4"
 	"strconv"
 )
 

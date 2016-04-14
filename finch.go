@@ -4,7 +4,7 @@ package finch
 import (
 	"encoding/json"
 	"github.com/getsentry/raven-go"
-	"gopkg.in/telegram-bot-api.v3"
+	"gopkg.in/telegram-bot-api.v4"
 	"io/ioutil"
 	"log"
 	"net/http"
