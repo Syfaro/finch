@@ -67,6 +67,7 @@ type Command interface {
 	ShouldExecute(tgbotapi.Message) bool
 	Execute(tgbotapi.Message) error
 	ExecuteWaiting(tgbotapi.Message) error
+	ExecuteCallback(tgbotapi.CallbackQuery) error
 	IsHighPriority(tgbotapi.Message) bool
 }
 
@@ -100,6 +101,10 @@ func (CommandBase) Execute(tgbotapi.Message) error { return nil }
 // ExecuteWaiting returns nil to show no error, you may overwrite this
 // when you are expecting to get a reply that is not a command.
 func (CommandBase) ExecuteWaiting(tgbotapi.Message) error { return nil }
+
+// ExecuteCallback returns nil to show no error, you may overwrite this
+// when you are expecting to get a callback query.
+func (CommandBase) ExecuteCallback(tgbotapi.CallbackQuery) error { return nil }
 
 // IsHighPriority return false, you should overwrite this function to
 // return true if your command needs to execute before checking for

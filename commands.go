@@ -10,7 +10,6 @@ import (
 
 var commands []*CommandState
 var inline InlineCommand
-var callback CallbackCommand
 
 // RegisterCommand adds a command to the bot.
 func RegisterCommand(cmd Command) {
@@ -20,11 +19,6 @@ func RegisterCommand(cmd Command) {
 // SetInline sets the Inline Query handler.
 func SetInline(handler InlineCommand) {
 	inline = handler
-}
-
-// SetCallback sets the Callback Query handler.
-func SetCallback(handler CallbackCommand) {
-	callback = handler
 }
 
 // SimpleCommand generates a command regex and matches it against a message.
@@ -85,19 +79,15 @@ func (f *Finch) commandRouter(update tgbotapi.Update) {
 		return
 	}
 
-	// if we've gotten a callback query, handle it
+	// check if we have a callback query
 	if update.CallbackQuery != nil {
-		if f.Callback == nil {
-			log.Println("Got callback query, but no handler is set!")
-
-			return
-		}
-
-		if err := f.Callback.Execute(f, *update.CallbackQuery); err != nil {
-			if sentryEnabled {
-				raven.CaptureError(err, nil)
+		for _, command := range f.Commands {
+			// check if the command is waiting for input
+			if command.IsWaiting(update.Message.From.ID) {
+				if err := command.Command.ExecuteCallback(*update.CallbackQuery); err != nil {
+					f.commandError(command.Command.Help().Name, *update.CallbackQuery.Message, err)
+				}
 			}
-			log.Printf("Error processing callback query:\n%+v\n", err)
 		}
 	}
 
@@ -106,7 +96,7 @@ func (f *Finch) commandRouter(update tgbotapi.Update) {
 		return
 	}
 
-	// first loop to check for any high priority commands
+	// loop to check for any high priority commands
 	for _, command := range f.Commands {
 		// if it isn't a high priority command, ignore it
 		if !command.Command.IsHighPriority(*update.Message) {
