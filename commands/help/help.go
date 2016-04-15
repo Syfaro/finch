@@ -54,6 +54,6 @@ func (cmd helpCommand) Execute(message tgbotapi.Message) error {
 
 	msg := tgbotapi.NewMessage(message.Chat.ID, b.String())
 	msg.ReplyToMessageID = message.MessageID
-	msg.ReplyMarkup = tgbotapi.ModeMarkdown
+	msg.ParseMode = tgbotapi.ModeMarkdown
 	return cmd.Finch.SendMessage(msg)
 }

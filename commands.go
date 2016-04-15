@@ -52,8 +52,12 @@ func SimpleArgCommand(trigger string, args int, message string) bool {
 func (f *Finch) commandRouter(update tgbotapi.Update) {
 	defer func() {
 		if r := recover(); r != nil {
-			if r != nil && sentryEnabled {
-				raven.CaptureError(r.(error), nil)
+			err, ok := r.(error)
+
+			if ok && sentryEnabled {
+				raven.CaptureError(err, nil)
+			} else {
+				log.Println(r)
 			}
 		}
 	}()
