@@ -87,7 +87,7 @@ func (f *Finch) commandRouter(update tgbotapi.Update) {
 	if update.CallbackQuery != nil {
 		for _, command := range f.Commands {
 			// check if the command is waiting for input
-			if command.IsWaiting(update.Message.From.ID) {
+			if command.IsWaiting(update.CallbackQuery.From.ID) {
 				if err := command.Command.ExecuteCallback(*update.CallbackQuery); err != nil {
 					f.commandError(command.Command.Help().Name, *update.CallbackQuery.Message, err)
 				}
