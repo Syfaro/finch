@@ -3,6 +3,7 @@ package finch
 import (
 	"bytes"
 	"gopkg.in/telegram-bot-api.v4"
+	"sync"
 )
 
 // Help contains information about a command,
@@ -122,27 +123,35 @@ func (cmd CommandBase) Set(key string, value interface{}) {
 	cmd.Finch.Config.Save()
 }
 
-type userWait map[int]bool
+type userWaitMap struct {
+	mutex    *sync.Mutex
+	userWait map[int]bool
+}
 
 // CommandState is the current state of a command.
 // It contains the command and if the command is waiting for a reply.
 type CommandState struct {
 	Command             Command
-	waitingForReplyUser userWait
+	waitingForReplyUser userWaitMap
 }
 
 // NewCommandState creates a new CommandState with an initialized map.
 func NewCommandState(cmd Command) *CommandState {
 	return &CommandState{
-		Command:             cmd,
-		waitingForReplyUser: make(userWait),
+		Command: cmd,
+		waitingForReplyUser: userWaitMap{
+			mutex:    &sync.Mutex{},
+			userWait: map[int]bool{},
+		},
 	}
 }
 
 // IsWaiting checks if the current CommandState is waiting for input from
 // this user.
 func (state *CommandState) IsWaiting(user int) bool {
-	if v, ok := state.waitingForReplyUser[user]; ok {
+	state.waitingForReplyUser.mutex.Lock()
+	defer state.waitingForReplyUser.mutex.Unlock()
+	if v, ok := state.waitingForReplyUser.userWait[user]; ok {
 		return v
 	}
 
@@ -151,13 +160,18 @@ func (state *CommandState) IsWaiting(user int) bool {
 
 // SetWaiting sets that the bot should expect user input from this user.
 func (state *CommandState) SetWaiting(user int) {
-	state.waitingForReplyUser[user] = true
+	state.waitingForReplyUser.mutex.Lock()
+	defer state.waitingForReplyUser.mutex.Unlock()
+	state.waitingForReplyUser.userWait[user] = true
 }
 
 // ReleaseWaiting sets that the bot should not expect any input from
 // this user.
 func (state *CommandState) ReleaseWaiting(user int) {
-	state.waitingForReplyUser[user] = false
+	state.waitingForReplyUser.mutex.Lock()
+	defer state.waitingForReplyUser.mutex.Unlock()
+	state.waitingForReplyUser.userWait[user] = false
+
 }
 
 // InlineCommand is a single command executed for an Inline Query.
