@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/getsentry/raven-go"
-	"gopkg.in/telegram-bot-api.v4"
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 var commands []*CommandState

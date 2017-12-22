@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	"github.com/getsentry/raven-go"
-	"gopkg.in/telegram-bot-api.v4"
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 // Config is a type used for storing configuration information.

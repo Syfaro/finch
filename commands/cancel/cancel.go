@@ -2,7 +2,7 @@ package commands
 
 import (
 	"github.com/Syfaro/finch"
-	"gopkg.in/telegram-bot-api.v4"
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 func init() {
