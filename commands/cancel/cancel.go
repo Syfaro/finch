@@ -1,7 +1,7 @@
 package commands
 
 import (
-	"github.com/syfaro/finch"
+	"github.com/Syfaro/finch"
 	"gopkg.in/telegram-bot-api.v4"
 )
 

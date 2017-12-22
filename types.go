@@ -2,8 +2,9 @@ package finch
 
 import (
 	"bytes"
-	"gopkg.in/telegram-bot-api.v4"
 	"sync"
+
+	"gopkg.in/telegram-bot-api.v4"
 )
 
 // Help contains information about a command,

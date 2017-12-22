@@ -3,13 +3,14 @@ package finch
 
 import (
 	"encoding/json"
-	"github.com/getsentry/raven-go"
-	"gopkg.in/telegram-bot-api.v4"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/getsentry/raven-go"
+	"gopkg.in/telegram-bot-api.v4"
 )
 
 // Config is a type used for storing configuration information.

@@ -2,9 +2,10 @@ package commands
 
 import (
 	"bytes"
-	"github.com/syfaro/finch"
-	"gopkg.in/telegram-bot-api.v4"
 	"strconv"
+
+	"github.com/Syfaro/finch"
+	"gopkg.in/telegram-bot-api.v4"
 )
 
 type UserMessageCount map[string]int

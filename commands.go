@@ -1,11 +1,12 @@
 package finch
 
 import (
-	"github.com/getsentry/raven-go"
-	"gopkg.in/telegram-bot-api.v4"
 	"log"
 	"regexp"
 	"strings"
+
+	"github.com/getsentry/raven-go"
+	"gopkg.in/telegram-bot-api.v4"
 )
 
 var commands []*CommandState

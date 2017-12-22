@@ -14,10 +14,10 @@ It's fairly easy to get this bot running, it requires few lines of code.
 package main
 
 import (
-	"github.com/syfaro/finch"
-	_ "github.com/syfaro/finch/commands/help"
-	_ "github.com/syfaro/finch/commands/info"
-	_ "github.com/syfaro/finch/commands/stats"
+	"github.com/Syfaro/finch"
+	_ "github.com/Syfaro/finch/commands/help"
+	_ "github.com/Syfaro/finch/commands/info"
+	_ "github.com/Syfaro/finch/commands/stats"
 )
 
 func main() {
@@ -33,10 +33,10 @@ The webhook listener code is currently untested, and requires running a `net/htt
 package main
 
 import (
-	"github.com/syfaro/finch"
-	_ "github.com/syfaro/finch/commands/help"
-	_ "github.com/syfaro/finch/commands/info"
-	_ "github.com/syfaro/finch/commands/stats"
+	"github.com/Syfaro/finch"
+	_ "github.com/Syfaro/finch/commands/help"
+	_ "github.com/Syfaro/finch/commands/info"
+	_ "github.com/Syfaro/finch/commands/stats"
 	"net/http"
 )
 
