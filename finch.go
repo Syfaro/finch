@@ -100,6 +100,10 @@ func (f *Finch) Start() {
 		raven.SetDSN(v.(string))
 	}
 
+	if v, ok := f.Config["sentry_env"]; ok {
+		raven.SetEnvironment(v.(string))
+	}
+
 	f.commandInit()
 
 	u := tgbotapi.NewUpdate(0)
