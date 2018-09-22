@@ -78,6 +78,13 @@ func NewFinch(token string) *Finch {
 func NewFinchWithClient(token string, client *http.Client) *Finch {
 	bot := &Finch{}
 
+	c, _ := LoadConfig()
+	bot.Config = *c
+
+	if token == "" {
+		token = bot.Config["token"].(string)
+	}
+
 	api, err := tgbotapi.NewBotAPIWithClient(token, client)
 	if err != nil {
 		panic(err)
@@ -86,9 +93,6 @@ func NewFinchWithClient(token string, client *http.Client) *Finch {
 	bot.API = api
 	bot.Commands = commands
 	bot.Inline = inline
-
-	c, _ := LoadConfig()
-	bot.Config = *c
 
 	return bot
 }
