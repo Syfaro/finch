@@ -2,63 +2,15 @@
 package finch
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"strings"
 
 	"github.com/getsentry/raven-go"
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-// Config is a type used for storing configuration information.
-type Config map[string]interface{}
-
-var sentryEnabled bool = false
-
-// LoadConfig loads the saved config, if it exists.
-//
-// It looks for a FINCH_CONFIG environmental variable,
-// before falling back to a file name config.json.
-func LoadConfig() (*Config, error) {
-	fileName := os.Getenv("FINCH_CONFIG")
-	if fileName == "" {
-		fileName = "config.json"
-	}
-
-	f, err := ioutil.ReadFile(fileName)
-	if err != nil {
-		return &Config{}, nil
-	}
-
-	var cfg Config
-	json.Unmarshal(f, &cfg)
-
-	return &cfg, nil
-}
-
-// Save saves the current Config struct.
-//
-// It uses the same file as LoadConfig.
-func (c *Config) Save() error {
-	b, err := json.Marshal(c)
-	if err != nil {
-		if sentryEnabled {
-			raven.CaptureErrorAndWait(err, nil)
-		}
-
-		return err
-	}
-
-	fileName := os.Getenv("FINCH_CONFIG")
-	if fileName == "" {
-		fileName = "config.json"
-	}
-
-	return ioutil.WriteFile(fileName, b, 0600)
-}
+var sentryEnabled = false
 
 // Finch is a Telegram Bot, including API, Config, and Commands.
 type Finch struct {
@@ -82,7 +34,12 @@ func NewFinchWithClient(token string, client *http.Client) *Finch {
 	bot.Config = *c
 
 	if token == "" {
-		token = bot.Config["token"].(string)
+		val := bot.Config.Get("token")
+		if val == nil {
+			panic("no token provided")
+		}
+
+		token = val.(string)
 	}
 
 	api, err := tgbotapi.NewBotAPIWithClient(token, client)
@@ -99,12 +56,12 @@ func NewFinchWithClient(token string, client *http.Client) *Finch {
 
 // Start initializes commands, and starts listening for messages.
 func (f *Finch) Start() {
-	if v, ok := f.Config["sentry_dsn"]; ok {
+	if v := f.Config.Get("sentry_dsn"); v != nil {
 		sentryEnabled = true
 		raven.SetDSN(v.(string))
 	}
 
-	if v, ok := f.Config["sentry_env"]; ok {
+	if v := f.Config.Get("sentry_env"); v != nil {
 		raven.SetEnvironment(v.(string))
 	}
 

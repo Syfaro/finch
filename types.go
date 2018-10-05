@@ -120,7 +120,7 @@ func (CommandBase) IsHighPriority(tgbotapi.Message) bool { return false }
 
 // Get fetches an item from the Config struct.
 func (cmd CommandBase) Get(key string) interface{} {
-	return cmd.Finch.Config[key]
+	return cmd.Finch.Config.Get(key)
 }
 
 // Set sets an item in the Config struct, then saves it.
