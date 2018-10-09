@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"sync"
 
-	"github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 // Help contains information about a command,

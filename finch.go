@@ -2,12 +2,11 @@
 package finch
 
 import (
-	"log"
 	"net/http"
 	"strings"
 
 	"github.com/getsentry/raven-go"
-	"github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 var sentryEnabled = false
@@ -70,14 +69,7 @@ func (f *Finch) Start() {
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 86400
 
-	updates, err := f.API.GetUpdatesChan(u)
-	if err != nil {
-		if sentryEnabled {
-			raven.CaptureErrorAndWait(err, nil)
-		}
-
-		log.Fatal(err)
-	}
+	updates := f.API.GetUpdatesChan(u)
 
 	for update := range updates {
 		go f.commandRouter(update)

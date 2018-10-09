@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"github.com/Syfaro/finch"
-	"github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 type UserMessageCount map[string]int
