@@ -11,6 +11,7 @@ import (
 
 var commands []*CommandState
 var inline InlineCommand
+var callback CallbackCommand
 
 // RegisterCommand adds a command to the bot.
 func RegisterCommand(cmd Command) {
@@ -20,6 +21,12 @@ func RegisterCommand(cmd Command) {
 // SetInline sets the Inline Query handler.
 func SetInline(handler InlineCommand) {
 	inline = handler
+}
+
+// SetCallback sets the Callback Query handler. If this is not set,
+// it will look through commands that have set waiting.
+func SetCallback(handler CallbackCommand) {
+	callback = handler
 }
 
 // SimpleCommand generates a command regex and matches it against a message.
@@ -86,6 +93,11 @@ func (f *Finch) commandRouter(update tgbotapi.Update) {
 
 	// check if we have a callback query
 	if update.CallbackQuery != nil {
+		if callback != nil {
+			callback.Execute(f, *update.CallbackQuery)
+			return
+		}
+
 		for _, command := range f.Commands {
 			// check if the command is waiting for input
 			if command.IsWaiting(update.CallbackQuery.From.ID) || command.Command.ShouldExecuteCallback(*update.CallbackQuery) {
@@ -94,6 +106,8 @@ func (f *Finch) commandRouter(update tgbotapi.Update) {
 				}
 			}
 		}
+
+		return
 	}
 
 	// nothing past here can handle this!
