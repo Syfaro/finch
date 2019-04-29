@@ -3,6 +3,7 @@ package finch
 import (
 	"log"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/getsentry/raven-go"
@@ -192,8 +193,17 @@ func (f *Finch) commandError(commandName string, message tgbotapi.Message, err e
 		// we're debugging, safe to send the actual error message
 		msg = tgbotapi.NewMessage(message.Chat.ID, err.Error())
 	} else {
+		// Attempt to load a custom error message, if one exists.
+		var text string
+		if m, ok := f.Config.Get("error_message").(string); ok {
+			text = m
+		} else {
+			text = "An error occured processing your command!"
+		}
+
 		// production mode, just show a generic error message
-		msg = tgbotapi.NewMessage(message.Chat.ID, "An error occured processing a command!")
+		msg = tgbotapi.NewMessage(message.Chat.ID, text)
+
 		// log the error
 		log.Println("Error processing command: " + err.Error())
 	}
@@ -201,7 +211,12 @@ func (f *Finch) commandError(commandName string, message tgbotapi.Message, err e
 	msg.ReplyToMessageID = message.MessageID
 
 	if sentryEnabled {
-		raven.CaptureError(err, map[string]string{"command": commandName})
+		raven.CaptureError(err, map[string]string{
+			"command": commandName,
+		}, &raven.User{
+			ID:       strconv.Itoa(message.From.ID),
+			Username: message.From.UserName,
+		})
 	}
 
 	// send the error message
