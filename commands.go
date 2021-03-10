@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/getsentry/raven-go"
-	"github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 var commands []*CommandState
@@ -214,7 +214,7 @@ func (f *Finch) commandError(commandName string, message tgbotapi.Message, err e
 		raven.CaptureError(err, map[string]string{
 			"command": commandName,
 		}, &raven.User{
-			ID:       strconv.Itoa(message.From.ID),
+			ID:       strconv.FormatInt(message.From.ID, 10),
 			Username: message.From.UserName,
 		})
 	}

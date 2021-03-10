@@ -2,7 +2,7 @@ package commands
 
 import (
 	"github.com/Syfaro/finch"
-	"github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 func init() {
@@ -20,9 +20,9 @@ func (cancelCommand) ShouldExecute(message tgbotapi.Message) bool {
 func (cmd cancelCommand) Execute(message tgbotapi.Message) error {
 	msg := tgbotapi.NewMessage(message.Chat.ID, "Your current command has been canceled.")
 	msg.ReplyToMessageID = message.MessageID
-	msg.ReplyMarkup = tgbotapi.ReplyKeyboardHide{
-		HideKeyboard: true,
-		Selective:    true,
+	msg.ReplyMarkup = tgbotapi.ReplyKeyboardRemove{
+		RemoveKeyboard: true,
+		Selective:      true,
 	}
 
 	for _, command := range cmd.Finch.Commands {
@@ -40,7 +40,7 @@ func (cancelCommand) Help() finch.Help {
 	return finch.Help{
 		Name: "Cancel",
 		Botfather: [][]string{
-			[]string{"cancel", "Cancels the current command"},
+			{"cancel", "Cancels the current command"},
 		},
 	}
 }

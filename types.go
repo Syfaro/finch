@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"sync"
 
-	"github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 // Help contains information about a command,
@@ -131,7 +131,7 @@ func (cmd CommandBase) Set(key string, value interface{}) {
 
 type userWaitMap struct {
 	mutex    *sync.Mutex
-	userWait map[int]bool
+	userWait map[int64]bool
 }
 
 // CommandState is the current state of a command.
@@ -147,14 +147,14 @@ func NewCommandState(cmd Command) *CommandState {
 		Command: cmd,
 		waitingForReplyUser: userWaitMap{
 			mutex:    &sync.Mutex{},
-			userWait: map[int]bool{},
+			userWait: map[int64]bool{},
 		},
 	}
 }
 
 // IsWaiting checks if the current CommandState is waiting for input from
 // this user.
-func (state *CommandState) IsWaiting(user int) bool {
+func (state *CommandState) IsWaiting(user int64) bool {
 	state.waitingForReplyUser.mutex.Lock()
 	defer state.waitingForReplyUser.mutex.Unlock()
 	if v, ok := state.waitingForReplyUser.userWait[user]; ok {
@@ -165,7 +165,7 @@ func (state *CommandState) IsWaiting(user int) bool {
 }
 
 // SetWaiting sets that the bot should expect user input from this user.
-func (state *CommandState) SetWaiting(user int) {
+func (state *CommandState) SetWaiting(user int64) {
 	state.waitingForReplyUser.mutex.Lock()
 	defer state.waitingForReplyUser.mutex.Unlock()
 	state.waitingForReplyUser.userWait[user] = true
@@ -173,7 +173,7 @@ func (state *CommandState) SetWaiting(user int) {
 
 // ReleaseWaiting sets that the bot should not expect any input from
 // this user.
-func (state *CommandState) ReleaseWaiting(user int) {
+func (state *CommandState) ReleaseWaiting(user int64) {
 	state.waitingForReplyUser.mutex.Lock()
 	defer state.waitingForReplyUser.mutex.Unlock()
 	state.waitingForReplyUser.userWait[user] = false

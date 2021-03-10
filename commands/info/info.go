@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Syfaro/finch"
-	"github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 func init() {
@@ -21,7 +21,7 @@ func (cmd *infoCommand) Help() finch.Help {
 		Description: "Displays information about the currently requesting user",
 		Example:     "/info@@",
 		Botfather: [][]string{
-			[]string{"info", "Information about the current user"},
+			{"info", "Information about the current user"},
 		},
 	}
 }

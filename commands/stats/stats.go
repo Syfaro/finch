@@ -5,17 +5,17 @@ import (
 	"strconv"
 
 	"github.com/Syfaro/finch"
-	"github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-type UserMessageCount map[string]int
+type userMessageCount map[string]int
 
-var userMessages UserMessageCount
+var userMessages userMessageCount
 
 func init() {
 	finch.RegisterCommand(&infoCollector{})
 	finch.RegisterCommand(&infoCommand{})
-	userMessages = make(UserMessageCount)
+	userMessages = make(userMessageCount)
 }
 
 type infoCommand struct {
@@ -28,7 +28,7 @@ func (cmd infoCommand) Help() finch.Help {
 		Description: "Displays some statistics",
 		Example:     "/stats@@",
 		Botfather: [][]string{
-			[]string{"stats", "Displays some statistics about bot usage"},
+			{"stats", "Displays some statistics about bot usage"},
 		},
 	}
 }
@@ -65,7 +65,7 @@ func (cmd infoCollector) Init(c *finch.CommandState, f *finch.Finch) error {
 
 	stored := cmd.Get("stats")
 	if stored == nil {
-		userMessages = make(UserMessageCount)
+		userMessages = make(userMessageCount)
 	} else {
 		for user, count := range stored.(map[string]interface{}) {
 			userMessages[user] = int(count.(float64))
@@ -87,7 +87,7 @@ func (cmd infoCollector) Execute(message tgbotapi.Message) error {
 	if _, ok := userMessages[message.From.String()]; !ok {
 		userMessages[message.From.String()] = 1
 	} else {
-		userMessages[message.From.String()] += 1
+		userMessages[message.From.String()]++
 	}
 
 	cmd.CommandBase.Set("stats", userMessages)

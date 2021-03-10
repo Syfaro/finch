@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/getsentry/raven-go"
-	"github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 var sentryEnabled = false
@@ -41,7 +41,7 @@ func NewFinchWithClient(token string, client *http.Client) *Finch {
 		token = val.(string)
 	}
 
-	api, err := tgbotapi.NewBotAPIWithClient(token, client)
+	api, err := tgbotapi.NewBotAPIWithClient(token, tgbotapi.APIEndpoint, client)
 	if err != nil {
 		panic(err)
 	}
