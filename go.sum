@@ -6,6 +6,8 @@ github.com/getsentry/raven-go v0.0.0-20180903072508-084a9de9eb03 h1:G/9fPivTr5Ei
 github.com/getsentry/raven-go v0.0.0-20180903072508-084a9de9eb03/go.mod h1:KungGk8q33+aIAZUIVWZDr2OfAEBsO49PX4NzFV5kcQ=
 github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.0.0-rc1.0.20210310195937-0a6e349f52da h1:a/jgPAV5g4yLLhJvuUodIf9+9El2wzBsS/HYxzNT6po=
 github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.0.0-rc1.0.20210310195937-0a6e349f52da/go.mod h1:5+h9c5l1Z/+Pi+5boa1Fmr4Q+FImsXYnifor92ljaVs=
+github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.4.0-beta.0 h1:mbEDV1g6RBzKd4sFjOWuyZdxItw4CWu5Kq4KaBAJbHM=
+github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.4.0-beta.0/go.mod h1:5+h9c5l1Z/+Pi+5boa1Fmr4Q+FImsXYnifor92ljaVs=
 github.com/pkg/errors v0.8.0 h1:WdK/asTD0HN+q6hsWO3/vpuAkAr+tw6aNJNDFFf0+qw=
 github.com/pkg/errors v0.8.0/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
